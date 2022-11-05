@@ -32,7 +32,9 @@ def fix_marks(schoolkid: Schoolkid) -> None:
     mark.update()
 
 
-
+def remove_chastisements(schoolkid: Schoolkid) -> None:
+    сhastisements = Chastisement.objects.filter(schoolkid=schoolkid)
+    сhastisements.delete()
 
 
 def create_commendation(child_name: str, subject: str):
