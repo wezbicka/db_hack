@@ -37,13 +37,14 @@ def remove_chastisements(schoolkid: Schoolkid) -> None:
     сhastisements.delete()
 
 
-def create_commendation(child_name: str, subject: str):
+def create_commendation(child_name: str, subject: str) -> None:
     schoolkid = get_kid_by_name(child_name)
-    child_lesson = Lesson.objects.filter(
+    lessons = Lesson.objects.filter(
         year_of_study=schoolkid.year_of_study,
         group_letter=schoolkid.group_letter,
         subject__title=subject,
-    ).order_by('-date').first()
+    )
+    lesson_of_subject = lessons.order_by('-date').first()
     commendations = [
         "Молодец!",
         "Отлично!",
@@ -79,8 +80,8 @@ def create_commendation(child_name: str, subject: str):
     commendation = random.choice(commendations)
     Commendation.objects.create(
         text=commendation,
-        created=child_lesson.date,
+        created=lesson_of_subject.date,
         schoolkid=schoolkid,
-        subject=child_lesson.subject,
-        teacher=child_lesson.teacher,
+        subject=lesson_of_subject.subject,
+        teacher=lesson_of_subject.teacher,
     )
