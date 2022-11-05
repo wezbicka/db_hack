@@ -3,7 +3,8 @@ import logging
 import sys
 import random
 
-from datacenter.models import Schoolkid, Mark, Chastisement, Lesson, Commendation
+from datacenter.models import Schoolkid, Mark, \
+    Chastisement, Lesson, Commendation
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 
@@ -25,19 +26,21 @@ def get_kid_by_name(child_name: str) -> Schoolkid:
         return child
 
 
-def fix_marks(schoolkid: Schoolkid) -> None:
+def fix_marks(child_name: str) -> None:
+    schoolkid = get_kid_by_name(child_name)
     bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__lte=3)
     for mark in bad_marks:
         mark.points = 5
     mark.update()
 
 
-def remove_chastisements(schoolkid: Schoolkid) -> None:
+def remove_chastisements(child_name: str) -> None:
+    schoolkid = get_kid_by_name(child_name)
     сhastisements = Chastisement.objects.filter(schoolkid=schoolkid)
     сhastisements.delete()
 
 
-def create_commendation(child_name: str, subject: str) -> None:
+def create_commendation(child_name: str, subject: str, commendations: list) -> None:
     schoolkid = get_kid_by_name(child_name)
     lessons = Lesson.objects.filter(
         year_of_study=schoolkid.year_of_study,
@@ -45,6 +48,16 @@ def create_commendation(child_name: str, subject: str) -> None:
         subject__title=subject,
     )
     lesson_of_subject = lessons.order_by('-date').first()
+    commendation = random.choice(commendations)
+    Commendation.objects.create(
+        text=commendation,
+        created=lesson_of_subject.date,
+        schoolkid=schoolkid,
+        subject=lesson_of_subject.subject,
+        teacher=lesson_of_subject.teacher,
+    )
+
+def main():
     commendations = [
         "Молодец!",
         "Отлично!",
@@ -77,11 +90,3 @@ def create_commendation(child_name: str, subject: str) -> None:
         "Ты многое сделал, я это вижу!",
         "Теперь у тебя точно все получится!",
     ]
-    commendation = random.choice(commendations)
-    Commendation.objects.create(
-        text=commendation,
-        created=lesson_of_subject.date,
-        schoolkid=schoolkid,
-        subject=lesson_of_subject.subject,
-        teacher=lesson_of_subject.teacher,
-    )
