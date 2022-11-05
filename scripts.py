@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 
 logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger('Как назвать логгер?')
+logger = logging.getLogger('DataBases')
 
 
 def get_kid_by_name(child_name: str) -> Schoolkid:
@@ -56,6 +56,7 @@ def create_commendation(child_name: str, subject: str, commendations: list) -> N
         subject=lesson_of_subject.subject,
         teacher=lesson_of_subject.teacher,
     )
+
 
 def main():
     commendations = [
