@@ -31,7 +31,7 @@ def fix_marks(child_name: str) -> None:
     bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__lte=3)
     for mark in bad_marks:
         mark.points = 5
-    mark.update()
+        mark.save()
 
 
 def remove_chastisements(child_name: str) -> None:
