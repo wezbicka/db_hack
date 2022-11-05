@@ -1,6 +1,8 @@
 import logging
 import sys
+from __future__ import annotations
 
+from datacenter.models import Mark 
 from datacenter.models import Schoolkid
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
@@ -20,6 +22,13 @@ def get_kid_by_name(child_name: str) -> Schoolkid:
     else:
         logger.info(f'Ученик по имени "{child.full_name}" найден.')
         return child
+
+
+def fix_marks(schoolkid: Schoolkid) -> None:
+    bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__lte=3)
+    for mark in bad_marks:
+        mark.points = 5
+    mark.update()
 
 
 
