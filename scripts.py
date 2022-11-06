@@ -5,7 +5,6 @@ import random
 
 from datacenter.models import Schoolkid, Mark, \
     Chastisement, Lesson, Commendation
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 
 logging.basicConfig(level=logging.ERROR)
@@ -15,10 +14,10 @@ logger = logging.getLogger('DataBases')
 def get_kid_by_name(child_name: str) -> Schoolkid:
     try:
         child = Schoolkid.objects.get(full_name__contains=child_name)
-    except MultipleObjectsReturned as exeption:
+    except Schoolkid.MultipleObjectsReturned as exeption:
         logger.error(f'{exeption}.Найдено больше одного ученика')
         sys.exit()
-    except ObjectDoesNotExist as exeption:
+    except Schoolkid.DoesNotExist as exeption:
         logger.error(f'{exeption}.Не найдено учеников с таким именем')
         sys.exit()
     else:
