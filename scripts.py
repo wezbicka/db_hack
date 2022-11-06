@@ -61,10 +61,15 @@ def get_kid_by_name(child_name: str) -> Schoolkid:
 
 def fix_marks(child_name: str) -> None:
     schoolkid = get_kid_by_name(child_name)
-    bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__lte=3)
-    for mark in bad_marks:
-        mark.points = 5
-        mark.save()
+    bad_marks = Mark.objects.filter(
+        schoolkid=schoolkid,
+        points__lte=3,
+    )
+    if bad_marks:
+        marks_count = bad_marks.update(points=random.randint(4,5))
+        logger.info(f"Оценки исправлены в количестве {marks_count} шт.") 
+    else:
+        print("У ученика нет плохих оценок!")
 
 
 def remove_chastisements(child_name: str) -> None:
